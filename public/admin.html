@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Paneli — Yusuf Tunç</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.css" integrity="sha512-vWHsp0PuTxwRMLtGTnbS7PDNtI7yFmmiFq24hjcqpup/KK7ixxWdXwRmerG9gu7peaSRIVxpFcfBSVrGzWcF4w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+      .login-section {
+        min-height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #0d6efd11 0%, #ffffff 50%, #0d6efd08 100%);
+      }
+      .login-card {
+        border: none;
+        border-top: 4px solid #0d6efd;
+      }
+      .stat-card {
+        border-left: 4px solid #0d6efd;
+      }
+      .post-row:hover {
+        background-color: #f8f9fa;
+      }
+      .preview-img {
+        width: 60px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      #coverPreview {
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 0.375rem;
+      }
+      .char-count {
+        font-size: 0.75rem;
+      }
+    </style>
+  </head>
+  <body class="d-flex flex-column min-vh-100 bg-light">
+
+    <!-- ─── Navbar ─────────────────────────────────────────────────────────────── -->
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="index.html">Yusuf Tunç</a>
+
+        <button class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#anasayfa">Anasayfa</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#hakkimda">Hakkımda</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#yetenekler">Yetenekler</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#projeler">Projeler</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#ozgecmis">Özgeçmiş</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#iletisim">İletişim</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="blog.html">
+                <i class="bi bi-journal-text me-1"></i>Blog
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="admin.html">
+                <i class="bi bi-shield-lock me-1"></i>Admin Paneli
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════════════════════════
+         GİRİŞ EKRANI
+    ═══════════════════════════════════════════════════════════════════════════════ -->
+    <section id="loginSection" class="login-section d-flex align-items-center py-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
+            <div class="card shadow login-card">
+              <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                  <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
+                    <i class="bi bi-shield-lock fs-2"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1">Admin Girişi</h3>
+                  <p class="text-muted small">Blog yönetim paneline erişmek için şifrenizi girin.</p>
+                </div>
+
+                <div class="mb-3">
+                  <label for="adminPassword" class="form-label text-muted small">Şifre</label>
+                  <div class="input-group">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="adminPassword"
+                      placeholder="Admin şifresi"
+                      autocomplete="current-password"
+                    >
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" title="Şifreyi göster/gizle">
+                      <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="loginError" class="alert alert-danger d-none py-2 small" role="alert">
+                  <i class="bi bi-exclamation-circle me-1"></i>
+                  <span id="loginErrorText">Yanlış şifre.</span>
+                </div>
+
+                <button id="loginBtn" onclick="login()" class="btn btn-primary w-100 py-2 mt-1">
+                  <span id="loginBtnText"><i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap</span>
+                  <span id="loginBtnSpinner" class="d-none">
+                    <span class="spinner-border spinner-border-sm me-2"></span>Doğrulanıyor...
+                  </span>
+                </button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════════
+         DASHBOARD
+    ═══════════════════════════════════════════════════════════════════════════════ -->
+    <section id="dashboardSection" class="d-none flex-grow-1 py-4">
+      <div class="container">
+
+        <!-- Üst Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="fw-bold mb-0">
+              <i class="bi bi-shield-check text-primary me-2"></i>Admin Paneli
+            </h4>
+            <small class="text-muted">Blog içeriklerini buradan yönetebilirsin.</small>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="blog.html" class="btn btn-outline-primary btn-sm" target="_blank">
+              <i class="bi bi-eye me-1"></i>Blogu Gör
+            </a>
+            <button onclick="logout()" class="btn btn-outline-danger btn-sm">
+              <i class="bi bi-box-arrow-right me-1"></i>Çıkış
+            </button>
+          </div>
+        </div>
+
+        <!-- İstatistik Kartları -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm stat-card h-100">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Toplam Yazı</p>
+                <h3 class="fw-bold mb-0" id="statTotal">—</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm stat-card h-100" style="border-left-color: #198754;">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Kategori</p>
+                <h3 class="fw-bold mb-0" id="statCategories">—</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm stat-card h-100" style="border-left-color: #fd7e14;">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Son Yazı</p>
+                <p class="fw-bold mb-0 small" id="statLastPost" style="line-height:1.3;">—</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="card shadow-sm stat-card h-100" style="border-left-color: #6f42c1;">
+              <div class="card-body">
+                <p class="text-muted small mb-1">Son Güncelleme</p>
+                <p class="fw-bold mb-0 small" id="statLastDate">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- YENİ YAZI FORMU -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-plus-circle text-primary me-2"></i>Yeni Blog Yazısı
+            </h5>
+          </div>
+          <div class="card-body p-4">
+
+            <!-- Genel Hata -->
+            <div id="postError" class="alert alert-danger d-none py-2 small"></div>
+            <!-- Başarı -->
+            <div id="postSuccess" class="alert alert-success d-none py-2 small">
+              <i class="bi bi-check-circle me-1"></i> Yazı başarıyla yayınlandı!
+            </div>
+
+            <div class="row g-3">
+              <!-- Başlık -->
+              <div class="col-md-8">
+                <label class="form-label text-muted small">Başlık <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="postTitle" placeholder="Yazı başlığı" maxlength="120">
+              </div>
+
+              <!-- Kategori -->
+              <div class="col-md-4">
+                <label class="form-label text-muted small">Kategori</label>
+                <input type="text" class="form-control" id="postCategory" placeholder="Teknoloji, Spor..." list="categoryList">
+                <datalist id="categoryList"></datalist>
+              </div>
+
+              <!-- Kapak Görseli -->
+              <div class="col-12">
+                <label class="form-label text-muted small">Kapak Görseli URL</label>
+                <input type="url" class="form-control" id="postCover" placeholder="https://ornek.com/gorsel.jpg">
+                <div id="coverPreviewWrapper" class="mt-2 d-none">
+                  <img id="coverPreview" src="" alt="Önizleme" class="w-100">
+                </div>
+              </div>
+
+              <!-- Özet -->
+              <div class="col-12">
+                <label class="form-label text-muted small">
+                  Özet
+                  <span class="text-muted">(boş bırakılırsa otomatik oluşturulur)</span>
+                </label>
+                <input type="text" class="form-control" id="postExcerpt" placeholder="Okuyucuya gösterilecek kısa özet..." maxlength="200">
+                <div class="char-count text-muted text-end mt-1"><span id="excerptCount">0</span>/200</div>
+              </div>
+
+              <!-- İçerik -->
+              <div class="col-12">
+                <label class="form-label text-muted small">İçerik <span class="text-danger">*</span></label>
+                <textarea class="form-control font-monospace" id="postContent" rows="10" placeholder="Yazı içeriğini buraya yaz..."></textarea>
+                <div class="char-count text-muted text-end mt-1"><span id="contentCount">0</span> karakter</div>
+              </div>
+
+              <!-- Gönder Butonu -->
+              <div class="col-12">
+                <button id="publishBtn" onclick="publishPost()" class="btn btn-primary px-4">
+                  <span id="publishBtnText"><i class="bi bi-send me-2"></i>Yayınla</span>
+                  <span id="publishBtnSpinner" class="d-none">
+                    <span class="spinner-border spinner-border-sm me-2"></span>Yayınlanıyor...
+                  </span>
+                </button>
+                <button onclick="clearForm()" class="btn btn-outline-secondary ms-2 px-3">
+                  <i class="bi bi-x-circle me-1"></i>Temizle
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEVCUT YAZILAR -->
+        <div class="card shadow-sm">
+          <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-list-ul text-primary me-2"></i>Mevcut Yazılar
+            </h5>
+            <span class="badge bg-primary rounded-pill" id="postCountBadge">0</span>
+          </div>
+          <div class="card-body p-0">
+
+            <!-- Boş Durum -->
+            <div id="noPostsMsg" class="text-center py-5 d-none">
+              <i class="bi bi-journal-x display-3 text-muted"></i>
+              <p class="text-muted mt-3">Henüz yazı yok. Yukarıdan ilk yazını ekle!</p>
+            </div>
+
+            <!-- Tablo -->
+            <div id="postsTableWrapper" class="d-none">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width:60px;"></th>
+                      <th>Başlık</th>
+                      <th class="d-none d-md-table-cell">Kategori</th>
+                      <th class="d-none d-md-table-cell">Tarih</th>
+                      <th style="width:120px;" class="text-end">İşlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody id="postsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Silme Onay Modalı -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title">
+              <i class="bi bi-trash3 text-danger me-2"></i>Yazıyı Sil
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p><b id="deletePostTitle"></b> başlıklı yazıyı silmek istediğinden emin misin?</p>
+            <p class="text-muted small">Bu işlem geri alınamaz.</p>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+              <i class="bi bi-trash3 me-1"></i>Evet, Sil
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Footer ─────────────────────────────────────────────────────────────── -->
+    <footer class="bg-dark text-white py-4 text-center mt-auto">
+      <div class="container">
+        <p class="mb-1 fw-bold">Yusuf Tunç</p>
+        <p class="text-muted small mb-2">Bilgisayar Mühendisliği — İnönü Üniversitesi</p>
+        <div class="mb-0">
+          <a href="mailto:yusuftuncc5@gmail.com" class="text-muted me-3"><i class="bi bi-envelope-fill"></i></a>
+          <a href="blog.html" class="text-muted me-3"><i class="bi bi-journal-text"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <script>
+      let allPosts = [];
+      let deleteTargetId = null;
+      const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+      // ─── Sayfa Yüklenince Oturum Kontrol Et ───────────────────────────────────
+      async function checkSession() {
+        try {
+          const res = await fetch('/api/admin/check');
+          const data = await res.json();
+          if (data.isAdmin) {
+            showDashboard();
+          }
+        } catch {}
+      }
+
+      // ─── Giriş ────────────────────────────────────────────────────────────────
+      async function login() {
+        const password = document.getElementById('adminPassword').value;
+        const btn = document.getElementById('loginBtn');
+        const errEl = document.getElementById('loginError');
+
+        if (!password) {
+          document.getElementById('loginErrorText').textContent = 'Şifre boş olamaz.';
+          errEl.classList.remove('d-none');
+          return;
+        }
+
+        // Yükleme
+        document.getElementById('loginBtnText').classList.add('d-none');
+        document.getElementById('loginBtnSpinner').classList.remove('d-none');
+        btn.disabled = true;
+        errEl.classList.add('d-none');
+
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            document.getElementById('adminPassword').value = '';
+            showDashboard();
+          } else {
+            document.getElementById('loginErrorText').textContent = data.error || 'Yanlış şifre.';
+            errEl.classList.remove('d-none');
+            document.getElementById('adminPassword').focus();
+          }
+        } catch {
+          document.getElementById('loginErrorText').textContent = 'Sunucuya bağlanılamadı.';
+          errEl.classList.remove('d-none');
+        } finally {
+          document.getElementById('loginBtnText').classList.remove('d-none');
+          document.getElementById('loginBtnSpinner').classList.add('d-none');
+          btn.disabled = false;
+        }
+      }
+
+      // ─── Çıkış ────────────────────────────────────────────────────────────────
+      async function logout() {
+        await fetch('/api/admin/logout', { method: 'POST' });
+        document.getElementById('dashboardSection').classList.add('d-none');
+        document.getElementById('loginSection').classList.remove('d-none');
+        document.getElementById('loginSection').style.display = '';
+      }
+
+      // ─── Dashboard Göster ─────────────────────────────────────────────────────
+      function showDashboard() {
+        document.getElementById('loginSection').classList.add('d-none');
+        const dashboard = document.getElementById('dashboardSection');
+        dashboard.classList.remove('d-none');
+        dashboard.classList.add('d-flex', 'flex-column');
+        loadPosts();
+      }
+
+      // ─── Post Yayınla ─────────────────────────────────────────────────────────
+      async function publishPost() {
+        const title    = document.getElementById('postTitle').value.trim();
+        const category = document.getElementById('postCategory').value.trim();
+        const cover    = document.getElementById('postCover').value.trim();
+        const excerpt  = document.getElementById('postExcerpt').value.trim();
+        const content  = document.getElementById('postContent').value.trim();
+
+        const errEl = document.getElementById('postError');
+        const sucEl = document.getElementById('postSuccess');
+        errEl.classList.add('d-none');
+        sucEl.classList.add('d-none');
+
+        if (!title) { showFormError('Başlık zorunludur.'); return; }
+        if (!content) { showFormError('İçerik zorunludur.'); return; }
+
+        setPublishLoading(true);
+
+        try {
+          const res = await fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, category, coverImage: cover, excerpt, content })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            sucEl.classList.remove('d-none');
+            clearForm();
+            loadPosts();
+            // Başarı mesajını 3 saniye sonra gizle
+            setTimeout(() => sucEl.classList.add('d-none'), 4000);
+          } else {
+            showFormError(data.error || 'Bilinmeyen hata.');
+          }
+        } catch {
+          showFormError('Sunucuya bağlanılamadı.');
+        } finally {
+          setPublishLoading(false);
+        }
+      }
+
+      function showFormError(msg) {
+        const el = document.getElementById('postError');
+        el.innerHTML = `<i class="bi bi-exclamation-circle me-1"></i>${msg}`;
+        el.classList.remove('d-none');
+      }
+
+      function setPublishLoading(loading) {
+        const btn = document.getElementById('publishBtn');
+        document.getElementById('publishBtnText').classList.toggle('d-none', loading);
+        document.getElementById('publishBtnSpinner').classList.toggle('d-none', !loading);
+        btn.disabled = loading;
+      }
+
+      function clearForm() {
+        ['postTitle','postCategory','postCover','postExcerpt','postContent'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        document.getElementById('coverPreviewWrapper').classList.add('d-none');
+        document.getElementById('excerptCount').textContent = '0';
+        document.getElementById('contentCount').textContent = '0';
+      }
+
+      // ─── Postları Yükle ───────────────────────────────────────────────────────
+      async function loadPosts() {
+        try {
+          const res = await fetch('/api/posts');
+          allPosts = await res.json();
+          renderPostsTable();
+          updateStats();
+          updateCategoryDatalist();
+        } catch (err) {
+          console.error('Post yükleme hatası:', err);
+        }
+      }
+
+      // ─── İstatistikleri Güncelle ──────────────────────────────────────────────
+      function updateStats() {
+        const total = allPosts.length;
+        const categories = new Set(allPosts.map(p => p.category)).size;
+        const last = allPosts[0];
+
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statCategories').textContent = categories;
+
+        if (last) {
+          document.getElementById('statLastPost').textContent = last.title;
+          document.getElementById('statLastDate').textContent = formatDate(last.createdAt);
+        } else {
+          document.getElementById('statLastPost').textContent = '—';
+          document.getElementById('statLastDate').textContent = '—';
+        }
+      }
+
+      // ─── Kategori Datalist ────────────────────────────────────────────────────
+      function updateCategoryDatalist() {
+        const cats = [...new Set(allPosts.map(p => p.category))];
+        document.getElementById('categoryList').innerHTML =
+          cats.map(c => `<option value="${esc(c)}">`).join('');
+      }
+
+      // ─── Post Tablosunu Render Et ─────────────────────────────────────────────
+      function renderPostsTable() {
+        const badge = document.getElementById('postCountBadge');
+        const body  = document.getElementById('postsTableBody');
+        const noMsg = document.getElementById('noPostsMsg');
+        const wrapper = document.getElementById('postsTableWrapper');
+
+        badge.textContent = allPosts.length;
+
+        if (allPosts.length === 0) {
+          noMsg.classList.remove('d-none');
+          wrapper.classList.add('d-none');
+          return;
+        }
+
+        noMsg.classList.add('d-none');
+        wrapper.classList.remove('d-none');
+
+        body.innerHTML = allPosts.map(post => `
+          <tr class="post-row">
+            <td>
+              <img
+                src="${esc(post.coverImage)}"
+                class="preview-img"
+                alt=""
+                onerror="this.src='https://picsum.photos/seed/${post.id}/60/45'"
+              >
+            </td>
+            <td>
+              <a href="blog-post.html?id=${post.id}" target="_blank" class="text-decoration-none fw-semibold text-dark">
+                ${esc(post.title)}
+              </a>
+              <div class="text-muted small d-md-none mt-1">
+                <span class="badge bg-primary">${esc(post.category)}</span>
+                ${formatDate(post.createdAt)}
+              </div>
+            </td>
+            <td class="d-none d-md-table-cell">
+              <span class="badge bg-primary">${esc(post.category)}</span>
+            </td>
+            <td class="d-none d-md-table-cell text-muted small">
+              ${formatDate(post.createdAt)}
+            </td>
+            <td class="text-end">
+              <a href="blog-post.html?id=${post.id}" target="_blank"
+                class="btn btn-outline-primary btn-sm me-1" title="Görüntüle">
+                <i class="bi bi-eye"></i>
+              </a>
+              <button
+                onclick="confirmDelete('${post.id}', '${esc(post.title).replace(/'/g, "\\'")}')"
+                class="btn btn-outline-danger btn-sm" title="Sil">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // ─── Silme Onayı ──────────────────────────────────────────────────────────
+      function confirmDelete(id, title) {
+        deleteTargetId = id;
+        document.getElementById('deletePostTitle').textContent = title;
+        deleteModal.show();
+      }
+
+      document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+        if (!deleteTargetId) return;
+
+        const btn = document.getElementById('confirmDeleteBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Siliniyor...';
+
+        try {
+          const res = await fetch(`/api/posts/${deleteTargetId}`, { method: 'DELETE' });
+          if (res.ok) {
+            deleteModal.hide();
+            loadPosts();
+          }
+        } catch (err) {
+          console.error('Silme hatası:', err);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-trash3 me-1"></i>Evet, Sil';
+          deleteTargetId = null;
+        }
+      });
+
+      // ─── Yardımcılar ─────────────────────────────────────────────────────────
+      function formatDate(iso) {
+        return new Date(iso).toLocaleDateString('tr-TR', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        });
+      }
+
+      function esc(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      // ─── Şifre Göster/Gizle ───────────────────────────────────────────────────
+      document.getElementById('togglePassword').addEventListener('click', () => {
+        const input = document.getElementById('adminPassword');
+        const icon  = document.getElementById('togglePasswordIcon');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.className = 'bi bi-eye-slash';
+        } else {
+          input.type = 'password';
+          icon.className = 'bi bi-eye';
+        }
+      });
+
+      // Enter ile giriş
+      document.getElementById('adminPassword').addEventListener('keydown', e => {
+        if (e.key === 'Enter') login();
+      });
+
+      // Kapak görsel önizlemesi
+      document.getElementById('postCover').addEventListener('input', function() {
+        const url = this.value.trim();
+        const wrapper = document.getElementById('coverPreviewWrapper');
+        const preview = document.getElementById('coverPreview');
+        if (url) {
+          preview.src = url;
+          preview.onerror = () => wrapper.classList.add('d-none');
+          preview.onload  = () => wrapper.classList.remove('d-none');
+        } else {
+          wrapper.classList.add('d-none');
+        }
+      });
+
+      // Karakter sayacı - özet
+      document.getElementById('postExcerpt').addEventListener('input', function() {
+        document.getElementById('excerptCount').textContent = this.value.length;
+      });
+
+      // Karakter sayacı - içerik
+      document.getElementById('postContent').addEventListener('input', function() {
+        document.getElementById('contentCount').textContent = this.value.length;
+      });
+
+      // ─── Başlat ───────────────────────────────────────────────────────────────
+      checkSession();
+    </script>
+  </body>
+</html>
